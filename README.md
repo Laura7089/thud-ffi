@@ -8,5 +8,7 @@ Docs are available by running `cargo doc --open`.
 
 ### Building
 
-Build with `cargo build`.
+`cargo build --release`
+
+Shared object file is found at `target/release/libthud_ffi.so`
 Example C headers will be generated at `target/thud-ffi.hpp`.
