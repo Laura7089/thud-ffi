@@ -1,20 +1,30 @@
 //! Foreign Function Interface bindings
 //!
-//! The functions provided in this crate can be called as C functions from non-rust languages.
+//! The functions provided in this thud can be called as C functions from non-rust languages.
 //! Hopefully, this will allow clients to be developed in other ecosystems, dependent on this
 //! library but not tied to using rust.
 //!
 //! The bindings are in an early state at present; they simply return integers representing the
 //! results of operations.
-use crate::state::Thud;
-use crate::Coord;
-use crate::Direction;
-use crate::EndState;
-use crate::Player;
 use libc::c_int;
 use libc::c_uint;
 use std::ptr;
 use std::slice;
+use thud::Coord;
+use thud::Direction;
+use thud::EndState;
+use thud::Piece;
+use thud::Player;
+use thud::Thud;
+
+fn piece_to_int(piece: Piece) -> c_uint {
+    match piece {
+        Piece::Empty => 0,
+        Piece::Dwarf => 1,
+        Piece::Troll => 2,
+        Piece::Thudstone => 3,
+    }
+}
 
 /// Wrapper for [`Thud::new()`](struct.Thud.html#method.new)
 #[no_mangle]
@@ -217,7 +227,7 @@ pub unsafe extern "C" fn thud_get_board(thud_raw: *mut Thud) -> *mut *mut c_uint
     for x in 0..15 {
         result.push(
             (0..15)
-                .map(|y| board[x][y].into_int() as c_uint)
+                .map(|y| piece_to_int(board[x][y]) as c_uint)
                 .collect::<Vec<c_uint>>()
                 .as_mut_ptr(),
         );
